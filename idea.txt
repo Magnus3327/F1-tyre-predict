@@ -1,0 +1,29 @@
+Project Title: F1 Tire Degradation Predictor
+1. Project Objective
+The goal of this project is to apply Supervised Machine Learning (specifically, Linear Regression)  to motorsport telemetry. The system will analyze historical lap times and physical variables to predict when a Formula 1 tire will experience a significant drop in performance (the "cliff"). This demonstrates a practical, engineering-focused application of data science outside of standard financial or housing datasets.
+
+2. Data Acquisition (Acquisizione Dati)
+Source: The open-source fastf1 Python library will be used to extract official timing data and weather conditions from a recent Grand Prix.
+Features (Inputs):
+TyreLife: The number of laps completed on the current set of tires.
+Compound: The type of tire used (Soft, Medium, Hard), handled via categorical encoding.
+TrackTemp: The track surface temperature during the specific lap.
+Target (Output):
+LapTime_Seconds: The continuous numerical value of the lap time, which the model aims to predict.
+
+3. Data Transformation (Trasformazione Dati)
+This phase utilizes pandas  to clean and prepare the raw telemetry:
+Filtering: Removing anomalous laps (e.g., out-laps, in-laps, laps under Safety Car or Virtual Safety Car conditions) to isolate pure racing pace.
+Handling Missing Data: Using dropna() to clean up incomplete sensor readings.
+Scaling: Applying StandardScaler from scikit-learn  to normalize variables like temperature and tire age, ensuring the model trains efficiently.
+
+4. Machine Learning Implementation (Analisi di Base)
+Algorithm: LinearRegression from the sklearn.linear_model module.
+Traning/Testing: Splitting the dataset into an 80% training set and a 20% test set using train_test_split.
+Evaluation Metrics: Validating the model's accuracy using MSE (Mean Squared Error) and the R 2 Score. 
+high R2  will scientifically prove that tire life and temperature strongly explain the increase in lap times.
+
+5. Visualization & Presentation (Visualizzazione)
+Using matplotlib, the project will generate clear, high-contrast visual evidence of the model's performance:
+Scatter Plots: Visualizing the relationship between TyreLife (X-axis) and LapTime (Y-axis).
+Prediction vs. Reality: A line graph superimposing the AI's predicted degradation curve over the actual scattered lap times recorded during the race, similar to the "Predizioni vs Valori Reali" plot from the course materials.
