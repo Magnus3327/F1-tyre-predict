@@ -1,2 +1,0 @@
-Il progetto analizza il degrado delle prestazioni degli pneumatici in F1. 
-Utilizza la Regressione Lineare per modellare come il tempo sul giro aumenti in funzione dell'usura della gomma e della temperatura dell'asfalto, fornendo uno strumento predittivo per la strategia di gara.
