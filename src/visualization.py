@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import os
 
 def save_plots(df, model, r2):
     """Crea e salva i grafici dei risultati."""
@@ -19,5 +20,10 @@ def save_plots(df, model, r2):
     plt.legend()
     plt.grid(True)
     
-    plt.savefig('../plots/degrado_gomme.png')
+    plots_dir = 'plots'
+    if not os.path.exists(plots_dir):
+        os.makedirs(plots_dir)
+        
+    percorso_file = os.path.join(plots_dir, 'degrado_gomme.png')
+    plt.savefig(percorso_file)
     print("Grafico salvato in plots/degrado_gomme.png")

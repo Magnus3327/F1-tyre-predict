@@ -2,38 +2,27 @@ import fastf1
 import os
 
 def cache_enable():
-    """
-    Abilita la cache per FastF1. 
-    La cache è essenziale per evitare di scaricare i dati ogni volta, 
-    migliorando notevolmente le prestazioni dopo il primo download.
-    """
-
-    cache_dir = '../cache'
-
+    """Abilita la cache per FastF1."""
+    cache_dir = '../../cache'
     if not os.path.exists(cache_dir):
         os.makedirs(cache_dir)
-        
-    fastf1.api.Cache.enable_cache(cache_dir)
+    fastf1.Cache.enable_cache(cache_dir)
 
 def get_race_laps(year, grand_prix, driver_id):
-    """
-    Scarica e restituisce i dati dei giri e il meteo per un pilota specifico.
-    """
-
-    print(f"Downlaod: {year} {grand_prix} - Gara...")
-    
-    session = fastf1.get_session(year, grand_prix, 'R') #('R' = Race/Gara)
-    
-    # Caricho i dati della sessione con anche i dati meteo.
+    """Scarica e restituisce i dati dei giri e il meteo per un pilota specifico."""
+    print(f"Download: {year} {grand_prix} - Gara...")
+    session = fastf1.get_session(year, grand_prix, 'R')
     session.load(telemetry=False, weather=True) 
 
-    # Filtro per il pilota specifico
-    driver_laps = session.laps.pick_driver(driver_id)
+    # 1. Estraiamo il DataFrame con i dati del pilota (TrackStatus, LapTime, ecc.)
+    driver_laps = session.laps.pick_drivers(driver_id).copy()
     
-    # Aggiungo i dati meteo ai giri del pilota.
-    # Questo facilita il lavoro nel file preprocessing.py
-    driver_laps = driver_laps.get_weather_data()
+    # 2. Estraiamo il DataFrame separato che contiene solo il meteo
+    weather_data = driver_laps.get_weather_data()
+    
+    # 3. CORREZIONE: Invece di sovrascrivere, aggiungiamo solo la colonna che ci serve!
+    # Usiamo .values per assicurarci che i dati si allineino perfettamente riga per riga
+    driver_laps['TrackTemp'] = weather_data['TrackTemp'].values
     
     print(f"Successo: {len(driver_laps)} giri per {driver_id}.")
-    
     return driver_laps

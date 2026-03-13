@@ -1,4 +1,5 @@
 from dataGathering import get_race_laps
+from dataGathering import cache_enable
 from preprocessing import clean_data
 from modelTraining import train_tyre_model
 from visualization import save_plots
@@ -7,7 +8,7 @@ def main():
     cache_enable()  # Abilita la cache per FastF1
 
     # 1. Raccolta dati (es. Leclerc a Monza 2023)
-    raw_data = get_race_laps(2023, 'Monza', 'LEC')
+    raw_data = get_race_laps(2026, 'Melbourne', 'LEC')
     
     # 2. Trasformazione
     clean_df = clean_data(raw_data, compound='MEDIUM')
