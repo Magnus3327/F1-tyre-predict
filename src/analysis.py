@@ -1,16 +1,10 @@
 import pandas as pd
 
 
-def collect_result(
-        results,
-        year,
-        gp,
-        driver,
-        stint,
-        compound,
-        deg_rate,
-        r2
-):
+def collect_result(results, year, gp, driver, stint, compound, deg_rate, r2):
+    """
+        Salva i risultati di ogni stint in un dataframe.
+    """
 
     results.append({
         "Year": year,

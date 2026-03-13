@@ -2,22 +2,31 @@ from sklearn.linear_model import LinearRegression, Ridge
 from sklearn.metrics import r2_score
 
 def estimate_fuel_penalty(df):
+    """
+        Stima il consumo di carburante per il giro corrente.
+    """
+
     X = df[["Fuel_Est"]]
     y = df["LapTime_Sec"]
+    
     model = LinearRegression()
     model.fit(X, y)
+    
     return model.coef_[0]
 
 def train_degradation_model(df):
+    """
+        Stima il degrado della gomma, considerando il consumo di carburante.
+    """
+
+    # Stima il consumo di carburante per il giro corrente
     fuel_penalty = estimate_fuel_penalty(df)
     df = df.copy()
 
     # Creazione della colonna necessaria per il plot
-    df["LapTime_FuelCorrected"] = (
-        df["LapTime_Sec"] +
-        df["Fuel_Est"] * fuel_penalty
-    )
+    df["LapTime_FuelCorrected"] = (df["LapTime_Sec"] + df["Fuel_Est"] * fuel_penalty)
 
+    # Creazione del modello di degrado
     features = ["TyreLife", "TyreLife2", "TrackTemp"]
     X = df[features]
     y = df["LapTime_FuelCorrected"]
@@ -33,5 +42,5 @@ def train_degradation_model(df):
     avg_life = df["TyreLife"].mean()
     deg_rate = tyre_coef + 2 * tyre2_coef * avg_life
 
-    # AGGIORNAMENTO: Restituiamo anche il df modificato
+    # Return il modello, il R2, il tasso di degrado, il consumo di carburante e il dataframe modificato
     return model, r2, deg_rate, fuel_penalty, df

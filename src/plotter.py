@@ -1,6 +1,10 @@
 import matplotlib.pyplot as plt
 
 def save_plots(df, model, r2, stint, compound, folder):
+    """
+        Salva i grafici del degrado della gomma per ogni stint.
+    """
+
     plt.figure(figsize=(10, 6))
 
     # 1. Punti Originali (in grigio/trasparente per mostrare il rumore)
@@ -10,7 +14,7 @@ def save_plots(df, model, r2, stint, compound, folder):
         color="gray", alpha=0.3, label="Raw Data (With Fuel)"
     )
 
-    # 2. Punti Corretti dal Modello (in blu - la tua base di training)
+    # 2. Punti Corretti dal Modello (in blu - la base di training)
     plt.scatter(
         df["TyreLife"],
         df["LapTime_FuelCorrected"],
@@ -33,6 +37,6 @@ def save_plots(df, model, r2, stint, compound, folder):
     plt.legend()
     plt.grid(True, linestyle='--', alpha=0.6)
 
-    path = f"{folder}/Stint_{stint}_{compound}_Advanced.png"
+    path = f"{folder}/Stint_{int(stint)}_{compound}.png"
     plt.savefig(path, dpi=300)
     plt.close()
