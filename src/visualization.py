@@ -1,39 +1,64 @@
 import matplotlib.pyplot as plt
 import os
+import numpy as np
 
-def save_plots(df, model, r2, deg_rate, stint_id, compound, driver_abbr, output_folder):
-    """
-    Genera e salva i grafici di analisi del degrado per lo stint specifico.
-    """
-    plt.figure(figsize=(12, 7))
-    
-    # 1. Plot dei dati reali (Scatter)
-    plt.scatter(df['TyreLife'], df['LapTime_Sec'], color='blue', alpha=0.6, label='Dati Reali (Telemetry)')
-    
-    # 2. Plot della predizione del modello (Trend Line)
-    # Per mostrare il trend, usiamo le feature reali dello stint
-    # Questo mostrerà come il modello ha "inseguito" i dati
-    y_pred = model.predict(df[['TyreLife', 'TrackTemp', 'Fuel_Est']])
-    
-    # Ordiniamo per TyreLife per evitare zig-zag nel grafico
-    sort_idx = df['TyreLife'].argsort()
-    plt.plot(df['TyreLife'].iloc[sort_idx], y_pred[sort_idx], color='red', linewidth=2, 
-             label=f'Trend ML (Degrado: {deg_rate:.3f} s/lap)')
-    
-    # 3. Formattazione estetica
-    plt.title(f"Analisi Degrado: {driver_abbr} | Stint {int(stint_id)} [{compound}]\n$R^2$ Score: {r2:.3f}", 
-              fontsize=14, fontweight='bold')
-    plt.xlabel('Età della Gomma (Giri)', fontsize=12)
-    plt.ylabel('Tempo sul Giro (Secondi)', fontsize=12)
-    
-    # Aggiungiamo una griglia tecnica
-    plt.grid(True, linestyle='--', alpha=0.5)
-    plt.legend(loc='upper left', frameon=True, shadow=True)
-    
-    # 4. Salvataggio organizzato
-    # Il percorso è già gestito dal main (es. plots/2023_Monza_LEC/)
+
+def save_plots(df, model, r2, deg_rate, stint_id, compound, driver, output_folder):
+
+    plt.figure(figsize=(12,7))
+
+    plt.scatter(
+        df['TyreLife'],
+        df['LapTime_Sec'],
+        alpha=0.6,
+        label="Real Laps"
+    )
+
+    # --------------------------
+    # trend prediction
+    # --------------------------
+
+    tyre_range = np.linspace(
+        df['TyreLife'].min(),
+        df['TyreLife'].max(),
+        50
+    )
+
+    avg_temp = df['TrackTemp'].mean()
+    avg_fuel = df['Fuel_Est'].mean()
+    avg_lap = df['LapNumber'].mean()
+
+    X_plot = np.column_stack([
+        tyre_range,
+        tyre_range**2,
+        np.full_like(tyre_range, avg_temp),
+        np.full_like(tyre_range, avg_fuel),
+        np.full_like(tyre_range, avg_lap)
+    ])
+
+    y_plot = model.predict(X_plot)
+
+    plt.plot(
+        tyre_range,
+        y_plot,
+        linewidth=3,
+        label=f"Degradation {deg_rate:.3f} s/lap"
+    )
+
+    plt.title(
+        f"{driver} | Stint {int(stint_id)} | {compound}\nR² = {r2:.3f}"
+    )
+
+    plt.xlabel("Tyre Age (laps)")
+    plt.ylabel("Lap Time (s)")
+
+    plt.grid(True)
+    plt.legend()
+
     filename = f"Stint_{int(stint_id)}_{compound}.png"
-    percorso_completo = os.path.join(output_folder, filename)
-    
-    plt.savefig(percorso_completo, dpi=300, bbox_inches='tight')
-    plt.close() # Libera memoria dopo il salvataggio
+
+    path = os.path.join(output_folder, filename)
+
+    plt.savefig(path, dpi=300, bbox_inches="tight")
+
+    plt.close()
