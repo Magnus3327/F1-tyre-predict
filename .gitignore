@@ -20,3 +20,11 @@ env/
 .idea/
 .vscode/
 
+########################
+# FastF1 cache
+########################
+# Cache locale nella repo (se configurata)
+fastf1_cache/
+cache/
+
+
