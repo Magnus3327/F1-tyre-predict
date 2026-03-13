@@ -57,7 +57,12 @@ def main():
                 compound = df_stint['Compound'].iloc[0]
                 
                 # D. TRAINING (Calcolo degrado e coefficienti)
-                model, r2, deg_rate = train_degradation_model(df_stint)
+                model, r2, deg_rate, fuel_penalty = train_degradation_model(df_stint)
+
+                print(
+                    f"   ✅ Stint {stint_id} ({compound}) completato."
+                    f" Degrado: {deg_rate:.3f} s/lap | Fuel penalty: {fuel_penalty:.3f} s/kg"
+                    )
                 
                 # E. VISUALIZZAZIONE
                 # Passiamo la cartella specifica a save_plots
