@@ -62,6 +62,8 @@ def main():
                 # E. VISUALIZZAZIONE
                 # Passiamo la cartella specifica a save_plots
                 save_plots(df_stint, model, r2, deg_rate, stint_id, compound, abbr, output_folder)
+
+                print(f"Stint {stint_id} | compound {compound} | laps {len(df_stint)}")
                 
                 print(f"   ✅ Stint {stint_id} ({compound}) completato. Degrado: {deg_rate:.3f} s/lap")
             else:
