@@ -1,0 +1,15 @@
+########################
+# Project-local ignores
+########################
+
+# Root-level cache and venv
+/cache/
+/venv/
+
+# Python bytecode cache in src
+/src/__pycache__/
+
+# macOS Finder metadata (both spellings, root)
+/.DS_Store
+/DS_STORE
+

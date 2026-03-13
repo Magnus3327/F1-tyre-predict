@@ -1,5 +1,6 @@
 import fastf1
 import pandas as pd
+import os
 
 def get_driver_laps(year, gp, driver):
 
@@ -17,8 +18,12 @@ def get_driver_laps(year, gp, driver):
 def get_race_laps(year, grand_prix, driver_id):
     """Scarica i dati e unisce il meteo ai giri del pilota."""
     # Abilitiamo la cache internamente se non lo hai fatto nel main
-    fastf1.Cache.enable_cache("cache")
     
+    if not os.path.exists("cache"):
+        os.makedirs("cache")
+
+    fastf1.Cache.enable_cache("cache")
+
     session = fastf1.get_session(year, grand_prix, 'R')
     session.load(telemetry=False, weather=True) 
     
