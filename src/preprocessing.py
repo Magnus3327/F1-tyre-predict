@@ -16,10 +16,10 @@ def clean_data(laps_data):
     laps = laps[
         laps['PitInTime'].isna() &
         laps['PitOutTime'].isna()
-    ]
+    ].copy()
 
     # lap time in secondi
-    laps['LapTime_Sec'] = laps['LapTime'].dt.total_seconds()
+    laps.loc[:, 'LapTime_Sec'] = laps['LapTime'].dt.total_seconds()
 
     # --------------------------------
     # WARMUP TYRE
@@ -33,7 +33,7 @@ def clean_data(laps_data):
 
     filtered = []
 
-    for stint in laps['Stint'].unique():
+    for stint in sorted(laps['Stint'].unique()):
 
         stint_df = laps[laps['Stint'] == stint].copy()
 

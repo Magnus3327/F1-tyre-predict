@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import os
+import pandas as pd
 import numpy as np
 
 
@@ -28,13 +29,13 @@ def save_plots(df, model, r2, deg_rate, stint_id, compound, driver, output_folde
     avg_fuel = df['Fuel_Est'].mean()
     avg_lap = df['LapNumber'].mean()
 
-    X_plot = np.column_stack([
-        tyre_range,
-        tyre_range**2,
-        np.full_like(tyre_range, avg_temp),
-        np.full_like(tyre_range, avg_fuel),
-        np.full_like(tyre_range, avg_lap)
-    ])
+    X_plot = pd.DataFrame({
+        "TyreLife": tyre_range,
+        "TyreLife2": tyre_range**2,
+        "TrackTemp": avg_temp,
+        "Fuel_Est": avg_fuel,
+        "LapNumber": avg_lap
+    })
 
     y_plot = model.predict(X_plot)
 
