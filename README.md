@@ -27,8 +27,6 @@ Le dipendenze Python sono elencate in `requirements.txt` (FastF1, pandas, scikit
 Da terminale, nella root del progetto:
 
 ```bash
-cd "/Users/matteo/Università/UNI2026/IA/Progetto/F1_tyre_predict"
-
 # Creazione (una sola volta)
 python3 -m venv venv
 
@@ -48,7 +46,7 @@ Lo script principale è `src/main.py` e richiede tre argomenti:
 
 - `--year`: anno del campionato (es. `2024`)
 - `--gp`: nome ufficiale del Gran Premio (es. `"Italian Grand Prix"`)
-- `--driver`: sigla del pilota (es. `"LEC"`, `"VER"`, `"HAM"`, ecc.)
+- `--driver`: sigla o numero del pilota (es. `"LEC"`, `"VER"`, `"HAM"`, ecc.)
 
 Esempio:
 
