@@ -21,13 +21,13 @@ def save_plots(df, model, r2, stint, compound, folder):
     # 3. Linea di tendenza (Trend ML)
     df_sorted = df.sort_values("TyreLife")
     
-    # Passiamo tutte e 4 le feature al modello per ottenere la linea di previsione accurata
-    y_pred = model.predict(df_sorted[["TyreLife", "TyreLife2", "TrackTemp", "Fuel_Est"]])
+    # Passiamo solo le 3 feature che il modello ML ibrido si aspetta
+    y_pred = model.predict(df_sorted[["TyreLife", "TyreLife2", "TrackTemp"]])
 
     plt.plot(
         df_sorted["TyreLife"], y_pred,
         linewidth=3, color="red", label="Modello ML (Degrado)"
-    )
+    ) 
 
     plt.xlabel("Vita Gomma (giri)")
     plt.ylabel("Tempo sul Giro (s)")
