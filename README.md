@@ -36,8 +36,8 @@ Si raccomanda l'utilizzo di un ambiente virtuale (virtualenv) per evitare confli
    
    # Su macOS/Linux:
    source venv/bin/activate
-   # Su Windows:
-   venv\Scripts\activate
+
+   # Su Windows: venv\Scripts\activate
 
    pip install --upgrade pip
    pip install -r requirements.txt
