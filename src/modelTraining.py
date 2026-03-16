@@ -1,6 +1,7 @@
+import numpy as np
 from sklearn.linear_model import HuberRegressor
 from sklearn.metrics import r2_score
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import KFold, cross_val_score
 
 # Costante fisica F1: si perdono circa 0.3 secondi ogni 10 kg di carburante.
 # Poiché Fuel_Est è in kg, la penalità corrisponde a 0.03 s/kg.
@@ -10,8 +11,8 @@ FUEL_EFFECT_SEC_PER_KG = 0.03
 def train_degradation_model(df):
     """
     Addestra un modello ibrido (Fisica + ML) per stimare il degrado degli pneumatici.
-    Ho scelto l'HuberRegressor perché, usando la Huber Loss, è matematicamente
-    robusto contro gli outlier (es. piccoli bloccaggi o traffico) rispetto a OLS/Ridge.
+    Utilizza una K-Fold Cross-Validation Dinamica per adattarsi alla lunghezza 
+    dello stint e l'HuberRegressor per gestire matematicamente gli outlier.
     """
 
     df = df.copy()
@@ -23,18 +24,24 @@ def train_degradation_model(df):
     X = df[["TyreLife", "TyreLife2", "TrackTemp"]]
     y = df["LapTime_FuelCorrected"]
 
-    # Suddivisione Train/Test.
-    # Uso shuffle=True per estrarre campioni da tutto lo stint. 
-    # È fondamentale per evitare bias dovuti al "warm-up" delle gomme, specialmente su piste fredde.
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, shuffle=True, random_state=42)
-
-    # Addestramento del HuberRegressor
+    # Implementazione K-Fold Dinamica
+    # Vogliamo assicurarci che in ogni fold ci siano almeno un minimo di giri (es. 5) nel test set per avere una metrica R2 statisticamente valida.
+    min_test_laps = 5
+    
+    # Calcolo il numero di fold: minimo 2, massimo 5, basato sui giri a disposizione
+    n_splits = max(2, min(8, len(df) // min_test_laps))
+    
+    # Divido lo stint in pieghe casuali. Uso shuffle=True per neutralizzare i bias temporali.
+    kf = KFold(n_splits=n_splits, shuffle=True, random_state=42)
     model = HuberRegressor()
-    model.fit(X_train, y_train)
 
-    # Valutazione sui dati di test (R2 può essere negativo se c'è molta varianza/traffico)
-    y_pred_test = model.predict(X_test)
-    r2_test = r2_score(y_test, y_pred_test)
+    # Calcolo l'R2 medio sulle diverse pieghe (folds) per avere una metrica super-affidabile
+    cv_scores = cross_val_score(model, X, y, cv=kf, scoring='r2')
+    r2_mean = np.mean(cv_scores)
+
+    # Addestramento finale del modello sull'intero set di dati dello stint
+    # Una volta validata la stabilità, uso tutti i giri per estrarre i coefficienti finali
+    model.fit(X, y)
 
     # Estraggo i coefficienti appresi dall'algoritmo
     tyre_coef = model.coef_[0]
@@ -44,4 +51,4 @@ def train_degradation_model(df):
     avg_life = df["TyreLife"].mean()
     deg_rate = tyre_coef + 2 * tyre2_coef * avg_life
 
-    return model, r2_test, deg_rate, FUEL_EFFECT_SEC_PER_KG, df
+    return model, r2_mean, deg_rate, FUEL_EFFECT_SEC_PER_KG, df
