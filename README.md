@@ -31,18 +31,17 @@ Le dipendenze Python necessarie (tra cui `fastf1`, `pandas`, `scikit-learn`, `ma
 
 Si raccomanda l'utilizzo di un ambiente virtuale (virtualenv) per evitare conflitti di dipendenze. Esegui i seguenti comandi da terminale nella root del progetto:
 
-1. Creazione dell'ambiente virtuale (solo la prima volta):
+```
    python3 -m venv venv
-
-2. Attivazione dell'ambiente (da eseguire a ogni nuova sessione):
+   
    # Su macOS/Linux:
    source venv/bin/activate
-   # Su Windows:
-   venv\Scripts\activate
 
-3. Installazione e aggiornamento delle dipendenze:
+   # Su Windows: venv\Scripts\activate
+
    pip install --upgrade pip
    pip install -r requirements.txt
+```
 
 ---
 
