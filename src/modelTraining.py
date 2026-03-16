@@ -30,7 +30,7 @@ def train_degradation_model(df):
 
     # 3. Suddivisione cronologica Train/Test (75% - 25%)
     # Addestriamo sulla prima parte dello stint per prevedere il finale.
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, shuffle=False)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, shuffle=True)
 
     # 4. Addestramento del modello Ridge regolarizzato
     model = Ridge(alpha=1.0)
