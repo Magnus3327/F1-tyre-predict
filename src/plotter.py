@@ -2,40 +2,40 @@ import matplotlib.pyplot as plt
 
 def save_plots(df, model, r2, stint, compound, folder):
     """
-    Salva i grafici del degrado della gomma per ogni stint.
+    Genera e salva i grafici del degrado per visualizzare l'output del modello ML
+    sovrapposto ai dati reali della telemetria.
     """
+
     plt.figure(figsize=(10, 6))
 
-    # 1. Dati grezzi (in grigio per mostrare il rumore e l'effetto carburante)
+    # Plot dei dati grezzi (in grigio, per far vedere l'effetto reale)
     plt.scatter(
         df["TyreLife"], df["LapTime_Sec"],
         color="gray", alpha=0.3, label="Dati Grezzi (Con Carburante)"
     )
 
-    # 2. Dati corretti dal modello (in blu - solo degrado puro)
+    # Plot dei dati puliti dal peso del carburante (il target del modello)
     plt.scatter(
         df["TyreLife"], df["LapTime_FuelCorrected"],
-        color="blue", alpha=0.7, label="Dati Corretti (Senza Carburante)"
+        color="blue", alpha=0.7, label="Dati Corretti (Solo Degrado)"
     )
 
-    # 3. Linea di tendenza (Trend ML)
+    # Calcolo della linea di tendenza del modello ML
     df_sorted = df.sort_values("TyreLife")
-    
-    # Passiamo solo le 3 feature che il modello ML ibrido si aspetta
     y_pred = model.predict(df_sorted[["TyreLife", "TyreLife2", "TrackTemp"]])
 
     plt.plot(
         df_sorted["TyreLife"], y_pred,
-        linewidth=3, color="red", label="Modello ML (Degrado)"
-    ) 
+        linewidth=3, color="red", label="Trend Predittivo (ML)"
+    )
 
-    plt.xlabel("Vita Gomma (giri)")
+    plt.xlabel("Vita Gomma (Giri)")
     plt.ylabel("Tempo sul Giro (s)")
-    # Nota: l'R2 ora riflette l'accuratezza predittiva sui dati di test!
-    plt.title(f"Stint {stint} | {compound} | Test R2={r2:.3f}")
+    plt.title(f"Stint {int(stint)} | Mescola {compound} | Test R2 = {r2:.3f}")
     plt.legend()
     plt.grid(True, linestyle='--', alpha=0.6)
 
+    # Salvataggio
     path = f"{folder}/Stint_{int(stint)}_{compound}.png"
     plt.savefig(path, dpi=300)
     plt.close()
