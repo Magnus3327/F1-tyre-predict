@@ -4,7 +4,8 @@ from dataCollector import get_driver_data
 from preprocessing import clean_data, split_stints
 from modelTraining import train_degradation_model
 from plotter import save_plots
-from analysis import collect_result, results_to_dataframe, analyze_and_plot_summary
+# AGGIORNAMENTO 1: Importiamo la nuova funzione rinominata
+from analysis import collect_result, results_to_dataframe, analyze_summary
 
 def main():
     # Setup degli argomenti da riga di comando per testare gare diverse
@@ -67,8 +68,8 @@ def main():
         results_df.to_csv(summary_path, index=False)
         print(f"\n📊 Riassunto salvato in: {summary_path}")
         
-        # Genero il grafico a barre per confrontare le mescole
-        analyze_and_plot_summary(results_df, output_folder)
+        # AGGIORNAMENTO 2: Chiamiamo la nuova funzione che stampa il testo e delega il grafico al plotter
+        analyze_summary(results_df, output_folder)
 
 if __name__ == "__main__":
     main()

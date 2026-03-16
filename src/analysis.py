@@ -1,6 +1,6 @@
 import pandas as pd
-import matplotlib.pyplot as plt
-import os
+# Importiamo la nuova funzione dal plotter
+from plotter import plot_summary_bar_chart 
 
 def collect_result(results, year, gp, driver, stint, compound, deg_rate, r2):
     """
@@ -22,68 +22,33 @@ def results_to_dataframe(results):
     """
     Converte i dizionari in un DataFrame strutturato.
     """
-
     return pd.DataFrame(results)
 
-def analyze_and_plot_summary(df_results, output_folder):
+def analyze_summary(df_results, output_folder):
     """
-    Calcola le medie raggruppate per mescola e genera un grafico a barre.
+    Stampa un riepilogo testuale ordinato per stint e delega la creazione
+    del grafico al modulo plotter.
     """
 
     if df_results.empty:
         print("⚠️ Nessun dato disponibile per l'analisi.")
         return
 
-    # Aggrego i dati per mescola per ottenere i valori medi del GP
-    summary = df_results.groupby("Compound").agg({
+    # Stampa dettagliata stint per stint (Cronologica)
+    print("\n📊 Riepilogo Degrado Cronologico (Singoli Stint):")
+
+    # Formattiamo la colonna Stint per non avere i decimali nella stampa
+    summary_print = df_results[["Stint", "Compound", "Degradation", "R2"]].copy()
+    summary_print["Stint"] = summary_print["Stint"].astype(int)
+    print(summary_print.to_string(index=False))
+
+    # Stampa aggregata media per mescola (Opzionale ma utile)
+    print("\n📊 Media Globale per Mescola (Tutta la gara):")
+    agg_summary = df_results.groupby("Compound").agg({
         "Degradation": "mean",
-        "R2": "mean",
         "Stint": "count"
     }).rename(columns={"Stint": "Num_Stints"}).reset_index()
+    print(agg_summary.to_string(index=False))
 
-    print("\n📊 Sommario Degrado Medio per Mescola:")
-    print(summary.to_string(index=False))
-
-    # Setup del grafico a barre
-    plt.figure(figsize=(8, 5))
-    
-    # Mappatura completa dei colori classici Pirelli F1
-    colors = {
-        "SOFT": "red", 
-        "MEDIUM": "yellow", 
-        "HARD": "white",
-        "INTERMEDIATE": "green",
-        "WET": "blue"
-    }
-    
-    # Mappiamo i colori (usando il grigio come fallback di sicurezza solo per errori/test)
-    bar_colors = [colors.get(c.upper(), "gray") for c in summary["Compound"]]
-
-    bars = plt.bar(
-        summary["Compound"], 
-        summary["Degradation"], 
-        color=bar_colors, 
-        edgecolor="black"
-    )
-    
-    plt.title("Confronto Degrado Medio per Mescola\n(Isolato dall'Effetto Carburante)")
-    plt.xlabel("Mescola (Compound)")
-    plt.ylabel("Degrado Medio (Secondi/Giro)")
-    plt.grid(axis='y', linestyle='--', alpha=0.7)
-
-    # Aggiungo i testi con i valori esatti in cima ad ogni barra
-    for bar in bars:
-        yval = bar.get_height()
-        plt.text(
-            bar.get_x() + bar.get_width() / 2, 
-            yval + 0.005, 
-            f"{yval:.3f}s", 
-            ha='center', va='bottom', fontweight='bold'
-        )
-
-    # Imposto uno sfondo grigio chiaro per non far "sparire" la barra della mescola Hard (bianca)
-    plot_path = os.path.join(output_folder, "compound_comparison.png")
-    plt.savefig(plot_path, dpi=300, facecolor='#f0f0f0') 
-    plt.close()
-    
-    print(f"📈 Grafico comparativo salvato in: {plot_path}")
+    # Deleghiamo il rendering grafico al modulo Plotter
+    plot_summary_bar_chart(df_results, output_folder)
