@@ -62,14 +62,16 @@ def main():
         print(f"   ✅ Stint {int(stint_id)} completato | " f"Degrado: {deg_rate:.3f} s/lap" )
 
     # -------------------------
-    # SAVE SUMMARY
+    # SAVE SUMMARY & ANALYZE
     # -------------------------
-
     results_df = results_to_dataframe(results)
     summary_path = os.path.join(output_folder, "degradation_summary.csv")
     results_df.to_csv(summary_path, index=False)
-
     print(f"\n📊 Summary salvato in: {summary_path}")
+
+    # Chiamata alla nuova funzione di analisi
+    from analysis import analyze_and_plot_summary
+    analyze_and_plot_summary(results_df, output_folder)
 
 
 if __name__ == "__main__":

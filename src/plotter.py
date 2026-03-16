@@ -2,38 +2,37 @@ import matplotlib.pyplot as plt
 
 def save_plots(df, model, r2, stint, compound, folder):
     """
-        Salva i grafici del degrado della gomma per ogni stint.
+    Salva i grafici del degrado della gomma per ogni stint.
     """
-
     plt.figure(figsize=(10, 6))
 
-    # 1. Punti Originali (in grigio/trasparente per mostrare il rumore)
+    # 1. Dati grezzi (in grigio per mostrare il rumore e l'effetto carburante)
     plt.scatter(
-        df["TyreLife"],
-        df["LapTime_Sec"],
-        color="gray", alpha=0.3, label="Raw Data (With Fuel)"
+        df["TyreLife"], df["LapTime_Sec"],
+        color="gray", alpha=0.3, label="Dati Grezzi (Con Carburante)"
     )
 
-    # 2. Punti Corretti dal Modello (in blu - la base di training)
+    # 2. Dati corretti dal modello (in blu - solo degrado puro)
     plt.scatter(
-        df["TyreLife"],
-        df["LapTime_FuelCorrected"],
-        color="blue", alpha=0.7, label="Fuel Corrected Data"
+        df["TyreLife"], df["LapTime_FuelCorrected"],
+        color="blue", alpha=0.7, label="Dati Corretti (Senza Carburante)"
     )
 
-    # 3. Linea di Trend (Trend ML)
+    # 3. Linea di tendenza (Trend ML)
     df_sorted = df.sort_values("TyreLife")
-    y_pred = model.predict(df_sorted[["TyreLife", "TyreLife2", "TrackTemp"]])
+    
+    # Passiamo tutte e 4 le feature al modello per ottenere la linea di previsione accurata
+    y_pred = model.predict(df_sorted[["TyreLife", "TyreLife2", "TrackTemp", "Fuel_Est"]])
 
     plt.plot(
-        df_sorted["TyreLife"],
-        y_pred,
-        linewidth=3, color="red", label="ML Degradation Model"
+        df_sorted["TyreLife"], y_pred,
+        linewidth=3, color="red", label="Modello ML (Degrado)"
     )
 
-    plt.xlabel("Tyre Life (laps)")
-    plt.ylabel("Lap Time (s)")
-    plt.title(f"Stint {stint} | {compound} | R2={r2:.3f}")
+    plt.xlabel("Vita Gomma (giri)")
+    plt.ylabel("Tempo sul Giro (s)")
+    # Nota: l'R2 ora riflette l'accuratezza predittiva sui dati di test!
+    plt.title(f"Stint {stint} | {compound} | Test R2={r2:.3f}")
     plt.legend()
     plt.grid(True, linestyle='--', alpha=0.6)
 

@@ -1,7 +1,6 @@
 import pandas as pd
 
 def clean_data(laps_data):
-
     """
         Pulisce i dati del pilota, rimuovendo i giri non validi.
         Crea le feature necessarie per il modello.
@@ -13,6 +12,10 @@ def clean_data(laps_data):
 
     # Creiamo subito una copia pulita per evitare SettingWithCopyWarning
     df_raw = laps_data.copy()
+
+    # Calcola il carburante sull'intera gara PRIMA dei filtri
+    max_lap = df_raw["LapNumber"].max()
+    df_raw["Fuel_Est"] = (max_lap - df_raw["LapNumber"]) * 1.8
 
     # Definiamo i criteri di filtraggio
     is_green_flag = df_raw["TrackStatus"].astype(str).str.contains("1")
