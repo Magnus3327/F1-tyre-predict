@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import os
 
-def save_plots(df, model, r2, stint, compound, folder):
+def save_plots(df, model, stint, compound, folder):
     """
     Genera e salva i grafici del degrado per visualizzare l'output del modello ML
     sovrapposto ai dati reali della telemetria.
@@ -32,7 +32,7 @@ def save_plots(df, model, r2, stint, compound, folder):
 
     plt.xlabel("Vita Gomma (Giri)")
     plt.ylabel("Tempo sul Giro (s)")
-    plt.title(f"Stint {int(stint)} | Mescola {compound} | Test R2 = {r2:.3f}")
+    plt.title(f"Stint {int(stint)} | Mescola {compound}")
     plt.legend()
     plt.grid(True, linestyle='--', alpha=0.6)
 
@@ -46,7 +46,7 @@ def plot_summary_bar_chart(df_results, output_folder):
     """
     Genera un grafico a barre che confronta il degrado per ogni singolo stint della gara in ordine cronologico.
     """
-    
+
     if df_results.empty:
         return
 

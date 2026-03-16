@@ -49,7 +49,7 @@ def main():
             model, r2, deg_rate, fuel_penalty, df_pred = train_degradation_model(stint_df)
             
             # Salvataggio dei grafici
-            save_plots(df_pred, model, r2, stint, compound, output_folder)
+            save_plots(df_pred, model, stint, compound, output_folder)
             
             # Raccolta dei risultati per l'analisi finale
             results = collect_result(

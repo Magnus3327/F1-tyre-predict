@@ -33,7 +33,9 @@ def train_degradation_model(df):
     
     # Divido lo stint in pieghe casuali. Uso shuffle=True per neutralizzare i bias temporali.
     kf = KFold(n_splits=n_splits, shuffle=True, random_state=42)
-    model = HuberRegressor()
+    
+    # Aumento max_iter per garantire la convergenza matematica dell'algoritmo anche con feature di scale diverse (es. TyreLife vs TyreLife2)
+    model = HuberRegressor(max_iter=1000)
 
     # Calcolo l'R2 medio sulle diverse pieghe (folds) per avere una metrica super-affidabile
     cv_scores = cross_val_score(model, X, y, cv=kf, scoring='r2')
