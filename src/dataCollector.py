@@ -1,42 +1,33 @@
 import fastf1
-import pandas as pd
 import os
 
-def get_driver_laps(year, gp, driver):
+# Abilito la cache per evitare di riscaricare GB di dati a ogni esecuzione.
+if not os.path.exists("cache"):
+    os.makedirs("cache")
+fastf1.Cache.enable_cache("cache")
 
-    fastf1.Cache.enable_cache("cache")
+def get_driver_data(year, gp, driver):
+    """
+    Scarica i dati dei giri per un pilota specifico in un determinato GP usando l'API FastF1,
+    e unisce i dati meteorologici (TrackTemp) sincronizzandoli con i giri.
+    """
 
-    session = fastf1.get_session(year, gp, "R")
-    session.load()
+    print(f"🔄 Scaricamento dati: {year} {gp} - Pilota: {driver}...")
+    try:
+        session = fastf1.get_session(year, gp, 'R') # 'R' indica la gara
+        session.load(telemetry=False, weather=True) 
+        
+        # Estraggo i giri del pilota
+        laps = session.laps.pick_drivers(driver).copy() # Copia per evitare problemi di riferimento con FastF1
+        
+        print("🌤️ Sincronizzazione dati meteo (TrackTemp)...")
+        weather_data = laps.get_weather_data()
 
-    laps = session.laps.pick_driver(driver)
+        laps['TrackTemp'] = weather_data['TrackTemp'].values
 
-    print(f"✅ Dati estratti per {driver}: {len(laps)} giri")
-
-    return laps
-
-def get_race_laps(year, grand_prix, driver_id):
-    """Scarica i dati e unisce il meteo ai giri del pilota."""
-    # Abilitiamo la cache internamente se non lo hai fatto nel main
+        print(f"✅ Dati estratti per {driver}: {len(laps)} giri totali.")
+        return laps
     
-    if not os.path.exists("cache"):
-        os.makedirs("cache")
-
-    fastf1.Cache.enable_cache("cache")
-
-    session = fastf1.get_session(year, grand_prix, 'R')
-    session.load(telemetry=False, weather=True) 
-    
-    # Risoluzione automatica del pilota (es. da 16 a LEC)
-    dr_info = session.get_driver(str(driver_id))
-    abbr = dr_info['Abbreviation']
-    
-    driver_laps = session.laps.pick_drivers(abbr).copy()
-    
-    # Recupero meteo e allineamento dati
-    weather_data = driver_laps.get_weather_data()
-    # Inseriamo la temperatura assicurandoci che l'indice sia coerente
-    driver_laps['TrackTemp'] = weather_data['TrackTemp'].to_list() 
-    
-    print(f"✅ Dati estratti per {abbr}: {len(driver_laps)} giri")
-    return driver_laps, abbr
+    except Exception as e:
+        print(f"❌ Errore nel recupero dati: {e}")
+        return None
