@@ -21,7 +21,7 @@ def train_degradation_model(df):
     df["LapTime_FuelCorrected"] = df["LapTime_Sec"] - (df["Fuel_Est"] * FUEL_EFFECT_SEC_PER_KG)
 
     # Definisco le feature per il ML (escluso il carburante, già gestito)
-    X = df[["TyreLife", "TyreLife2", "TrackTemp"]]
+    X = df[["TyreLife", "TyreLife2"]]
     y = df["LapTime_FuelCorrected"]
 
     # Implementazione K-Fold Dinamica
