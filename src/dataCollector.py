@@ -1,31 +1,24 @@
 import fastf1
 import os
 
-# Abilito la cache per evitare di riscaricare GB di dati a ogni esecuzione.
+# Abilita la cache per evitare di riscaricare i dati a ogni esecuzione.
 if not os.path.exists("cache"):
     os.makedirs("cache")
 fastf1.Cache.enable_cache("cache")
 
 def get_driver_data(year, gp, driver):
     """
-    Scarica i dati dei giri per un pilota specifico in un determinato GP usando l'API FastF1,
-    e unisce i dati meteorologici (TrackTemp) sincronizzandoli con i giri.
+    Scarica i dati dei giri per un pilota specifico in un determinato GP.
     """
-
-    print(f"🔄 Scaricamento dati: {year} {gp} - Pilota: {driver}...")
+    print(f"🔄 Download dati telemetrici: {year} {gp} - Pilota: {driver}...")
     try:
-        session = fastf1.get_session(year, gp, 'R') # 'R' indica la gara
-        session.load(telemetry=False, weather=True) 
+        session = fastf1.get_session(year, gp, 'R')
+        # Download solo telemetria (meteo disabilitato per evitare multicollinearità)
+        session.load(telemetry=False, weather=False) 
         
-        # Estraggo i giri del pilota
-        laps = session.laps.pick_drivers(driver).copy() # Copia per evitare problemi di riferimento con FastF1
-        
-        print("🌤️ Sincronizzazione dati meteo (TrackTemp)...")
-        weather_data = laps.get_weather_data()
-
-        laps['TrackTemp'] = weather_data['TrackTemp'].values
-
+        laps = session.laps.pick_drivers(driver).copy()
         print(f"✅ Dati estratti per {driver}: {len(laps)} giri totali.")
+        
         return laps
     
     except Exception as e:
