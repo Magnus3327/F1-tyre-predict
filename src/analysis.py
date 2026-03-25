@@ -1,8 +1,7 @@
 import pandas as pd
-# Importiamo la nuova funzione dal plotter
 from plotter import plot_summary_bar_chart 
 
-def collect_result(results, year, gp, driver, stint, compound, deg_rate, r2):
+def collect_result(results, year, gp, driver, stint, compound, deg_rate, mae):
     """
     Aggiorna la lista dei risultati con le metriche calcolate nell'ultimo stint.
     """
@@ -14,7 +13,7 @@ def collect_result(results, year, gp, driver, stint, compound, deg_rate, r2):
         "Stint": stint,
         "Compound": compound,
         "Degradation": deg_rate,
-        "R2": r2
+        "MAE_Sec": mae
     })
     return results
 
@@ -38,7 +37,7 @@ def analyze_summary(df_results, output_folder):
     print("\n📊 Riepilogo Degrado Cronologico (Singoli Stint):")
 
     # Formattiamo la colonna Stint per non avere i decimali nella stampa
-    summary_print = df_results[["Stint", "Compound", "Degradation", "R2"]].copy()
+    summary_print = df_results[["Stint", "Compound", "Degradation", "MAE_Sec"]].copy()
     summary_print["Stint"] = summary_print["Stint"].astype(int)
     print(summary_print.to_string(index=False))
 

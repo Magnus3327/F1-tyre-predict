@@ -37,9 +37,10 @@ def train_degradation_model(df):
     # Aumento max_iter per garantire la convergenza matematica dell'algoritmo anche con feature di scale diverse (es. TyreLife vs TyreLife2)
     model = HuberRegressor(max_iter=1000)
 
-    # Calcolo l'R2 medio sulle diverse pieghe (folds) per avere una metrica super-affidabile
-    cv_scores = cross_val_score(model, X, y, cv=kf, scoring='r2')
-    r2_mean = np.mean(cv_scores)
+    # Sostituisco l'R2 con il MAE (Mean Absolute Error) per coerenza con il modello robusto.
+    # sklearn usa valori negativi per le metriche di errore, quindi mettiamo il '-' per farlo tornare positivo
+    cv_scores = cross_val_score(model, X, y, cv=kf, scoring='neg_mean_absolute_error')
+    mae_mean = -np.mean(cv_scores)
 
     # Addestramento finale del modello sull'intero set di dati dello stint
     # Una volta validata la stabilità, uso tutti i giri per estrarre i coefficienti finali
@@ -53,4 +54,4 @@ def train_degradation_model(df):
     avg_life = df["TyreLife"].mean()
     deg_rate = tyre_coef + 2 * tyre2_coef * avg_life
 
-    return model, r2_mean, deg_rate, FUEL_EFFECT_SEC_PER_KG, df
+    return model, mae_mean, deg_rate, FUEL_EFFECT_SEC_PER_KG, df

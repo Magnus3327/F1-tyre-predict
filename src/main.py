@@ -46,7 +46,7 @@ def main():
 
         try:
             # Training del modello robusto
-            model, r2, deg_rate, fuel_penalty, df_pred = train_degradation_model(stint_df)
+            model, mae, deg_rate, fuel_penalty, df_pred = train_degradation_model(stint_df)
             
             # Salvataggio dei grafici
             save_plots(df_pred, model, stint, compound, output_folder)
@@ -54,7 +54,7 @@ def main():
             # Raccolta dei risultati per l'analisi finale
             results = collect_result(
                 results, args.year, args.gp, args.driver, 
-                stint, compound, deg_rate, r2
+                stint, compound, deg_rate, mae
             )
             print(f"   ✅ Stint {stint} completato | Degrado: {deg_rate:.3f} s/lap")
             
