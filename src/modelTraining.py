@@ -7,9 +7,9 @@ FUEL_EFFECT_SEC_PER_KG = 0.03
 
 def train_degradation_model(df):
     """
-    Addestra un modello HuberRegressor robusto per stimare l'usura degli pneumatici,
-    gestendo gli outlier tramite validazione MAE.
+    Addestra un modello HuberRegressor robusto per stimare l'usura degli pneumatici, gestendo gli outlier tramite validazione MAE.
     """
+
     df = df.copy()
 
     # Correzione fisica a priori
@@ -32,7 +32,7 @@ def train_degradation_model(df):
     # Fitting finale sull'intero stint
     model.fit(X, y)
 
-    # Calcolo del degrado medio pesato (derivata prima)
+    # Calcolo del degrado medio pesato
     tyre_coef = model.coef_[0]
     tyre2_coef = model.coef_[1]
     avg_life = df["TyreLife"].mean()

@@ -42,6 +42,7 @@ def main():
             save_plots(df_pred, model, stint, compound, mae, args.year, args.gp, args.driver, output_folder)
             
             results = collect_result(results, args.year, args.gp, args.driver, stint, compound, deg_rate, mae)
+
             print(f"   ✅ Stint {stint} completato | Degrado: {deg_rate:.3f} s/lap")
             
         except Exception as e:
@@ -51,6 +52,7 @@ def main():
         results_df = results_to_dataframe(results)
         summary_path = os.path.join(output_folder, "degradation_summary.csv")
         results_df.to_csv(summary_path, index=False)
+        
         print(f"\n📊 Riassunto salvato in: {summary_path}")
         
         analyze_summary(results_df, output_folder)

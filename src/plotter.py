@@ -36,6 +36,7 @@ def plot_summary_bar_chart(df_results, output_folder):
     """
     Genera un istogramma comparativo dei tassi di degrado estratti.
     """
+
     if df_results.empty:
         return
 
@@ -45,6 +46,7 @@ def plot_summary_bar_chart(df_results, output_folder):
     gp = df_results["GP"].iloc[0]
     driver = df_results["Driver"].iloc[0]
     
+    # Mappa colori per le mescole normalemente usate in F1
     colors = {"SOFT": "red", "MEDIUM": "yellow", "HARD": "white", "INTERMEDIATE": "green", "WET": "blue"}
     
     x_labels = [f"Stint {int(row['Stint'])}\n({row['Compound']})" for _, row in df_results.iterrows()]
