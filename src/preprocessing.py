@@ -2,9 +2,10 @@ import pandas as pd
 
 def clean_data(laps_data):
     """
-    Pulisce i dati telemetrici rimuovendo anomalie e giri non validi.
+    Pulisce i dati telemetrici rimuovendo anomalie e giri non validi. 
     Prepara le feature necessarie per l'addestramento.
     """
+
     print("🧹 Inizio preprocessing...")
     if laps_data.empty:
         return pd.DataFrame()
@@ -38,6 +39,7 @@ def split_stints(df):
     """
     Divide il DataFrame in stint separati, filtrando quelli troppo brevi o anomali.
     """
+    
     stints = {}
     for stint, stint_df in df.groupby("Stint"):
         # Scarto outlier estremi in positivo (es. traffico pesante)

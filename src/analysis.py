@@ -3,8 +3,9 @@ from plotter import plot_summary_bar_chart
 
 def collect_result(results, year, gp, driver, stint, compound, deg_rate, mae):
     """
-    Aggiorna la lista dei risultati con le metriche calcolate.
+    Raccoglie i risultati in un dizionario e lo aggiunge alla lista dei risultati.
     """
+    
     results.append({
         "Year": year,
         "GP": gp,
@@ -23,6 +24,7 @@ def analyze_summary(df_results, output_folder):
     """
     Stampa un riepilogo testuale ordinato e delega il grafico al plotter.
     """
+
     if df_results.empty:
         print("⚠️ Nessun dato disponibile per l'analisi.")
         return
