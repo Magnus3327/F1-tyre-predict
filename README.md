@@ -40,12 +40,13 @@ Si raccomanda l'uso di un ambiente virtuale:
 
 python -m venv venv
 
-# Attivazione (Linux/macOS)
+#### Attivazione (Linux/macOS)
 source venv/bin/activate
 
-# Attivazione (Windows) 
+#### Attivazione (Windows) 
 venv\Scripts\activate
 
+#### Dipendenze
 pip install -r requirements.txt
 
 ---
