@@ -1,6 +1,6 @@
 # 🏎️ F1-Tyre-Analysis
 
-Progetto universitario di Ingegneria Informatica per l'analisi predittiva e la stima del degrado degli pneumatici in Formula 1 tramite tecniche di **Physics-Informed Machine Learning**.
+Progetto universitario per l'analisi predittiva e la stima del degrado degli pneumatici in Formula 1 tramite tecniche di **Physics-Informed Machine Learning**.
 
 Il software utilizza i dati telemetrici ufficiali (tramite l'API `FastF1`) per isolare il puro consumo della mescola dall'effetto del consumo di carburante e dal rumore statistico della pista, fornendo metriche accurate per il supporto alle decisioni strategiche.
 
@@ -21,7 +21,7 @@ A differenza dei modelli di regressione standard, **F1-Tyre-Analysis** adotta un
 La pipeline è modulare e suddivisa nei seguenti script:
 
 - 📥 **`dataCollector.py`**: Gestisce l'ingestion dei dati tramite `FastF1`. Ottimizzato per scaricare solo la telemetria necessaria, riducendo l'uso di banda e memoria.
-- 🧹 **`preprocessing.py`**: Pulisce i dati rimuovendo anomalie (Safety Car, pit-stop, giri non a regime) e genera le feature polinomiali (`TyreLife`²) per catturare il "cliff" prestazionale.
+- 🧹 **`preprocessing.py`**: Pulisce i dati rimuovendo anomalie (Safety Car, pit-stop, giri non a regime) e genera le feature polinomiali (`TyreLife²`) per catturare il "cliff" prestazionale.
 - 🧠 **`modelTraining.py`**: Il cuore algoritmico. Applica la correzione del carburante e addestra il regressore Huber per estrarre il coefficiente di degrado puro.
 - 📊 **`plotter.py`**: Genera visualizzazioni professionali sovrapponendo i dati reali corretti al trend predittivo calcolato.
 - 📈 **`analysis.py`**: Aggrega i risultati degli stint, calcola le medie per mescola e genera il riepilogo statistico finale.
@@ -38,39 +38,43 @@ La pipeline è modulare e suddivisa nei seguenti script:
 ### Installazione
 Si raccomanda l'uso di un ambiente virtuale:
 
-```
 python -m venv venv
 
 # Attivazione (Linux/macOS)
 source venv/bin/activate
 
-# Attivazione (Windows) venv\Scripts\activate
+# Attivazione (Windows) 
+venv\Scripts\activate
 
 pip install -r requirements.txt
-```
+
 ---
 
-### 🚀 Guida all'Uso
-Lo script main.py accetta tre argomenti obbligatori da riga di comando:
+## 🚀 Guida all'Uso
 
-```
-python src/main.py --year 2024 --gp "Italian Grand Prix" --driver "LEC"
-```
+Lo script `main.py` accetta tre argomenti obbligatori da riga di comando:
+
+python main.py --year 2024 --gp "Italian Grand Prix" --driver "LEC"
 
 ### Parametri:
-- year: Anno del campionato.
-- gp: Nome del Gran Premio (es. "Monaco Grand Prix" o "Italian Grand Prix").
-- driver: Sigla del pilota (es. "LEC", "SAI", "VER").
+- `--year`: Anno del campionato.
+- `--gp`: Nome del Gran Premio (es. "Monaco Grand Prix" o "Italian Grand Prix").
+- `--driver`: Sigla del pilota (es. "LEC", "SAI", "VER").
 
 ---
 
-### Output e Risultati
+## 📂 Output e Risultati
 
-I risultati vengono salvati automaticamente nella directory plots/<year>_<gp>_<driver>/:
-- Grafici degli Stint (Stint_X_Compound.png) Visualizzazione dei tempi sul giro reali (grigi), i dati corretti dal carburante (blu) e la parabola di degrado stimata dal ML (rossa).
-- stint_comparison.png: Istogramma comparativo che mostra il tasso di degrado (s/giro) e l'errore MAE per ogni fase della gara.
-- degradation_summary.csv: Tabella esportabile con i coefficienti di degrado e le metriche di errore calcolate per ogni stint.
+I risultati vengono salvati automaticamente nella directory `plots/<year>_<gp>_<driver>/`:
 
---- 
+- **Grafici degli Stint (`Stint_X_Compound.png`)**: Visualizzazione dei tempi sul giro reali (grigi), i dati corretti dal carburante (blu) e la parabola di degrado stimata dal ML (rossa).
+- **`stint_comparison.png`**: Istogramma comparativo che mostra il tasso di degrado (s/giro) e l'errore MAE per ogni fase della gara.
+- **`degradation_summary.csv`**: Tabella esportabile con i coefficienti di degrado e le metriche di errore calcolate per ogni stint.
 
-### Autore: Matteo Miglio
+---
+
+## 🛠️ Note Tecniche sulla Selezione delle Feature
+Il modello finale esclude deliberatamente la temperatura della pista (`TrackTemp`) come variabile indipendente. Test sperimentali hanno dimostrato che l'inclusione di variabili ambientali stocastiche introduceva rumore eccessivo (overfitting) su stint singoli. La rimozione della temperatura ha permesso di ridurre l'errore MAE medio del 30% e stabilizzare i coefficienti di degrado su valori fisicamente coerenti con il comportamento delle mescole Pirelli.
+
+---
+**Autore:** Matteo Miglio  
