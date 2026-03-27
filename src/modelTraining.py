@@ -38,4 +38,7 @@ def train_degradation_model(df):
     avg_life = df["TyreLife"].mean()
     deg_rate = tyre_coef + 2 * tyre2_coef * avg_life
 
-    return model, mae_mean, deg_rate, FUEL_EFFECT_SEC_PER_KG, df
+    # Estraiamo la maschera degli outlier identificati dalla Huber Loss
+    outlier_mask = model.outliers_
+
+    return model, mae_mean, deg_rate, FUEL_EFFECT_SEC_PER_KG, df, outlier_mask

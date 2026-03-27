@@ -37,9 +37,14 @@ def main():
         print(f"Stint {stint} | compound {compound} | laps {len(stint_df)}")
 
         try:
-            model, mae, deg_rate, _, df_pred = train_degradation_model(stint_df)
+            # Training del modello robusto con gestione degli outlier
+            model, mae, deg_rate, _, df_pred, outlier_mask = train_degradation_model(stint_df)
             
-            save_plots(df_pred, model, stint, compound, mae, args.year, args.gp, args.driver, output_folder)
+            # Salvataggio dei grafici passando la maschera degli outlier
+            save_plots(
+                df_pred, model, stint, compound, 
+                mae, args.year, args.gp, args.driver, outlier_mask, output_folder
+            )
             
             results = collect_result(results, args.year, args.gp, args.driver, stint, compound, deg_rate, mae)
 
