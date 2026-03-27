@@ -12,7 +12,7 @@ def save_plots(df, model, stint, compound, mae, year, gp, driver, outlier_mask, 
     plt.figure(figsize=(10, 6))
 
     # Dati Grezzi (sfondo grigio per dare contesto sul peso del carburante)
-    plt.scatter(df["TyreLife"], df["LapTime_Sec"], color="gray", alpha=0.2, label="Dati Grezzi")
+    plt.scatter(df["TyreLife"], df["LapTime_Sec"], color="white", alpha=0.2, label="Dati Grezzi")
 
     # Dati Puliti: separati tra INLIER (giri buoni) e OUTLIER (giri ignorati)
     inlier_mask = ~outlier_mask
@@ -50,7 +50,7 @@ def plot_summary_bar_chart(df_results, output_folder):
     """
     Genera un istogramma comparativo dei tassi di degrado estratti.
     """
-    
+
     if df_results.empty:
         return
 
