@@ -78,4 +78,22 @@ I risultati vengono salvati automaticamente nella directory `plots/<year>_<gp>_<
 Il modello finale esclude deliberatamente la temperatura della pista (`TrackTemp`) come variabile indipendente. Test sperimentali hanno dimostrato che l'inclusione di variabili ambientali stocastiche introduceva rumore eccessivo (overfitting) su stint singoli. La rimozione della temperatura ha permesso di ridurre l'errore MAE medio del 30% e stabilizzare i coefficienti di degrado su valori fisicamente coerenti con il comportamento delle mescole Pirelli.
 
 ---
+
+## 📚 Riferimenti e Fonti
+
+In conformità con le linee guida accademiche del corso, si indicano di seguito le fonti e le ispirazioni tecniche utilizzate per lo sviluppo del progetto:
+
+1. **FastF1 API (Raccolta Telemetria):** 
+   * Repository ufficiale: [FastF1 on GitHub](https://github.com/theoehrly/Fast-F1)
+   * Documentazione tecnica: [FastF1 Docs](https://theoehrly.github.io/Fast-F1/)
+2. **Scikit-Learn (Infrastruttura Machine Learning):**
+   * Huber Regressor: [Scikit-Learn HuberRegressor Documentation](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.HuberRegressor.html)
+3. **Costante di Dominio F1 (Penalità Carburante):**
+   * La costante empirica di $0.03 \text{ s/kg}$ (secondi persi per ogni kg di benzina a bordo) è ricavata dalla letteratura classica di dinamica del veicolo applicata al motorsport, tra cui:
+     * *Milliken, W. F., & Milliken, D. L. (1995). "Race Car Vehicle Dynamics"*.
+     * Analisi ingegneristiche e discussioni tecniche della community di [F1Technical](https://www.f1technical.net/).
+4. **Uso di GenAI (Università di Trento Guidelines):**
+   * In linea con le linee guida d'ateneo sull'uso responsabile dell'IA generativa, si dichiara l'utilizzo dell'assistente AI *Antigravity* (basato su modello *Gemini 3 Flash* di Google DeepMind) per attività di supporto al debugging del codice. Si precisa esplicitamente che tutti i testi della documentazione e del report sono stati interamente concepiti e ideati dall'autore, e l'assistente virtuale è stato impiegato esclusivamente come supporto nell'impaginazione e nella revisione dei contenuti per migliorarne la sintassi, l'italiano e l'efficacia descrittiva complessiva.
+
+---
 **Autore:** Matteo Miglio  
